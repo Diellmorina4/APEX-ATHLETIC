@@ -1,105 +1,22 @@
-// Products Data
+// Products Data (imported from apex_products.json — images mapped to local site-*.jpg when available)
 const products = [
-    {
-        id: 1,
-        name: "APEX Ultra Running Shoe",
-        category: "shoes",
-        price: 129.99,
-        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",
-        description: "High-performance running shoes with advanced cushioning",
-        rating: 4.8,
-        reviews: 234
-    },
-    {
-        id: 2,
-        name: "APEX Performance T-Shirt",
-        category: "apparel",
-        price: 44.99,
-        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
-        description: "Breathable moisture-wicking t-shirt",
-        rating: 4.6,
-        reviews: 189
-    },
-    {
-        id: 3,
-        name: "APEX Core Training Shorts",
-        category: "apparel",
-        price: 54.99,
-        image: "https://images.unsplash.com/photo-1506629082632-19b5bbb78b79?w=400&h=400&fit=crop",
-        description: "Lightweight training shorts with compression",
-        rating: 4.7,
-        reviews: 156
-    },
-    {
-        id: 4,
-        name: "APEX Elite Basketball Shoes",
-        category: "shoes",
-        price: 149.99,
-        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",
-        description: "Professional basketball shoes with ankle support",
-        rating: 4.9,
-        reviews: 312
-    },
-    {
-        id: 5,
-        name: "APEX Sports Bra",
-        category: "apparel",
-        price: 59.99,
-        image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=400&fit=crop",
-        description: "High-impact support sports bra",
-        rating: 4.8,
-        reviews: 267
-    },
-    {
-        id: 6,
-        name: "APEX Training Jacket",
-        category: "apparel",
-        price: 89.99,
-        image: "https://images.unsplash.com/photo-1551028719-00167b16ebc5?w=400&h=400&fit=crop",
-        description: "Lightweight weather-resistant training jacket",
-        rating: 4.7,
-        reviews: 198
-    },
-    {
-        id: 7,
-        name: "APEX Athletic Socks (3 Pack)",
-        category: "accessories",
-        price: 19.99,
-        image: "https://images.unsplash.com/photo-1556821552-107d12294456?w=400&h=400&fit=crop",
-        description: "Premium cushioned athletic socks",
-        rating: 4.5,
-        reviews: 421
-    },
-    {
-        id: 8,
-        name: "APEX Gym Backpack",
-        category: "accessories",
-        price: 79.99,
-        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
-        description: "Durable gym backpack with shoe storage",
-        rating: 4.6,
-        reviews: 289
-    },
-    {
-        id: 9,
-        name: "APEX Yoga Mat",
-        category: "accessories",
-        price: 34.99,
-        image: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400&h=400&fit=crop",
-        description: "Non-slip yoga mat with carrying strap",
-        rating: 4.7,
-        reviews: 342
-    },
-    {
-        id: 10,
-        name: "APEX Wireless Earbuds",
-        category: "accessories",
-        price: 99.99,
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
-        description: "Water-resistant wireless earbuds with noise cancellation",
-        rating: 4.8,
-        reviews: 523
-    }
+    { id: 1, name: "Nike React Miler", category: "shoes", price: 130.00, image: "site-1.jpg", description: "", rating: 4.5, reviews: 120 },
+    { id: 2, name: "Nike Air Zoom Pegasus 37", category: "shoes", price: 120.00, image: "site-2.jpg", description: "", rating: 4.5, reviews: 98 },
+    { id: 3, name: "Nike Joyride Run Flyknit", category: "shoes", price: 170.00, image: "site-3.jpg", description: "", rating: 4.4, reviews: 85 },
+    { id: 4, name: "Nike Mercurial Vapor 13 Elite FG", category: "shoes", price: 250.00, image: "site-4.jpg", description: "", rating: 4.6, reviews: 64 },
+    { id: 5, name: "Nike Phantom Vision Elite Dynamic Fit FG", category: "shoes", price: 280.00, image: "site-5.jpg", description: "", rating: 4.6, reviews: 72 },
+    { id: 6, name: "Nike Phantom Venom Academy FG", category: "shoes", price: 150.00, image: "site-6.jpg", description: "", rating: 4.4, reviews: 54 },
+    { id: 7, name: "Nike Mercurial Vapor 13 Elite Tech Craft FG", category: "shoes", price: 280.00, image: "site-7.jpg", description: "", rating: 4.7, reviews: 41 },
+    { id: 8, name: "Nike Mercurial Superfly 7 Pro MDS FG", category: "shoes", price: 270.00, image: "site-8.jpg", description: "", rating: 4.7, reviews: 53 },
+    { id: 9, name: "Nike Air Force 1", category: "shoes", price: 120.00, image: "site-9.jpg", description: "", rating: 4.6, reviews: 210 },
+    { id: 10, name: "Nike Air Max 90", category: "shoes", price: 140.00, image: "site-10.jpg", description: "", rating: 4.5, reviews: 147 },
+    { id: 11, name: "Nike Air Max 90 LTR", category: "shoes", price: 160.00, image: "site-11.jpg", description: "", rating: 4.5, reviews: 93 },
+    { id: 12, name: "Nike Joyride Dual Run", category: "shoes", price: 140.00, image: "site-12.jpg", description: "", rating: 4.4, reviews: 67 },
+    { id: 13, name: "Nike Renew Run", category: "shoes", price: 110.00, image: "site-13.jpg", description: "", rating: 4.3, reviews: 88 },
+    { id: 14, name: "Nizza X Disney", category: "shoes", price: 100.00, image: "site-14.jpg", description: "", rating: 4.2, reviews: 52 },
+    { id: 15, name: "X_PLR", category: "shoes", price: 130.00, image: "site-15.jpg", description: "", rating: 4.3, reviews: 46 },
+    { id: 16, name: "NMD_R1", category: "shoes", price: 180.00, image: "site-16.jpg", description: "", rating: 4.5, reviews: 71 },
+    { id: 17, name: "Extra Product", category: "shoes", price: 0.00, image: "", description: "", rating: 4.0, reviews: 0 }
 ];
 
 // Shopping Cart
@@ -216,11 +133,14 @@ function switchLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('language', lang);
     
-    // Update active button
+    // Update active button (safe: don't rely on event)
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.remove('active');
+        const txt = btn.textContent.trim().toLowerCase();
+        if ((lang === 'en' && txt === 'eng') || (lang === 'sq' && txt === 'sq')) {
+            btn.classList.add('active');
+        }
     });
-    event.target.classList.add('active');
     
     // Update page content
     updatePageLanguage();
@@ -279,7 +199,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.lang-btn')[1].classList.add('active');
         document.querySelectorAll('.lang-btn')[0].classList.remove('active');
     }
-    updatePageLanguage();
+    try {
+        updatePageLanguage();
+    } catch (e) {
+        console.error('updatePageLanguage error:', e);
+        // Ensure products still load if language update fails
+        try { loadProducts(); } catch (e2) { console.error(e2); }
+    }
     updateCartCount();
 });
 
