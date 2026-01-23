@@ -490,6 +490,27 @@ function completeCheckout(event) {
     
     const orderId = 'APEX-' + Date.now();
     
+    // Get checkout form data
+    const fullName = document.querySelector('.checkout-form input[placeholder*="Full"]')?.value || 'Not provided';
+    const checkoutEmail = document.querySelector('.checkout-form input[placeholder*="Email"]')?.value || 'Not provided';
+    const address = document.querySelector('.checkout-form input[placeholder*="Address"]')?.value || 'Not provided';
+    
+    // Build cart items string
+    let cartItems = '';
+    for (let productId in cart) {
+        const item = cart[productId];
+        cartItems += '\n- ' + item.name + ' x' + item.quantity + ' = $' + (item.price * item.quantity).toFixed(2);
+    }
+    
+    // Calculate total
+    const total = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+    
+    const subject = encodeURIComponent('New Order #' + orderId + ' from APEX');
+    const body = encodeURIComponent('Order ID: ' + orderId + '\n\nCustomer Details:\nName: ' + fullName + '\nEmail: ' + checkoutEmail + '\nAddress: ' + address + '\n\nItems:' + cartItems + '\n\nTotal: $' + total);
+    
+    // Send to both emails
+    window.location.href = 'mailto:diell.morina5@gmail.com,farismorina69@gmail.com?subject=' + subject + '&body=' + body;
+    
     // Show confirmation
     document.getElementById('checkout-modal').style.display = 'none';
     document.getElementById('confirmation-modal').style.display = 'block';
@@ -510,7 +531,17 @@ function closeConfirmation() {
 // Handle Contact Submit
 function handleContactSubmit(event) {
     event.preventDefault();
-    alert('Thank you for contacting APEX! We will get back to you soon.');
+    
+    const name = event.target.elements[0].value;
+    const email = event.target.elements[1].value;
+    const message = event.target.elements[2].value;
+    
+    const subject = encodeURIComponent('New Contact from APEX - ' + name);
+    const body = encodeURIComponent('From: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
+    
+    // Send to both emails
+    window.location.href = 'mailto:diell.morina5@gmail.com,farismorina69@gmail.com?subject=' + subject + '&body=' + body;
+    
     event.target.reset();
 }
 
