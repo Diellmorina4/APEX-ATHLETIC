@@ -280,8 +280,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.lang-btn')[0].classList.remove('active');
     }
     updatePageLanguage();
-    loadProducts();
     updateCartCount();
+});
+
+// Backup load on window load
+window.addEventListener('load', function() {
+    const grid = document.getElementById('products-grid');
+    if (grid && grid.children.length === 0) {
+        loadProducts();
+    }
 });
 
 // Load and Display Products
@@ -337,7 +344,17 @@ function filterProducts(category) {
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    event.target.classList.add('active');
+    
+    // Find and mark the clicked button as active
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.textContent.toLowerCase() === category || 
+            (category === 'all' && btn.textContent.toLowerCase() === 'all') ||
+            (category === 'shoes' && btn.textContent.toLowerCase() === 'shoes') ||
+            (category === 'apparel' && btn.textContent.toLowerCase() === 'apparel') ||
+            (category === 'accessories' && btn.textContent.toLowerCase() === 'accessories')) {
+            btn.classList.add('active');
+        }
+    });
     
     loadProducts();
 }
@@ -515,7 +532,7 @@ function completeCheckout(event) {
     }, 500);
 }
     updateCartCount();
-}
+
 
 // Close Confirmation
 function closeConfirmation() {
