@@ -163,10 +163,13 @@ function updatePageLanguage() {
     
     // Products Section
     document.querySelector('.products-section h2').textContent = t.our_collection;
-    document.querySelectorAll('.filter-btn')[0].textContent = t.all;
-    document.querySelectorAll('.filter-btn')[1].textContent = t.shoes;
-    document.querySelectorAll('.filter-btn')[2].textContent = t.apparel;
-    document.querySelectorAll('.filter-btn')[3].textContent = t.accessories;
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    if (filterBtns && filterBtns.length >= 4) {
+        filterBtns[0].textContent = t.all;
+        filterBtns[1].textContent = t.shoes;
+        filterBtns[2].textContent = t.apparel;
+        filterBtns[3].textContent = t.accessories;
+    }
     
     // About
     document.querySelector('.about h2').textContent = t.about_title;
@@ -235,9 +238,9 @@ function loadProducts() {
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
-    
+
     const rating = '⭐'.repeat(Math.floor(product.rating));
-    
+
     card.innerHTML = `
         <div class="product-image" style="background-image: url('${product.image}'); background-size: cover; background-position: center;"></div>
         <div class="product-info">
@@ -254,11 +257,27 @@ function createProductCard(product) {
                     <option value="5">5</option>
                     <option value="10">10</option>
                 </select>
-                <button onclick="addToCart(${product.id})">Add to Cart</button>
+                <button class="card-add-btn">Add to Cart</button>
             </div>
         </div>
     `;
-    
+
+    // Open product modal when clicking the card, except when clicking the actions area
+    card.addEventListener('click', (e) => {
+        if (!e.target.closest('.product-actions')) {
+            showProductModal(product);
+        }
+    });
+
+    // Wire up add to cart button inside the card
+    const addBtn = card.querySelector('.card-add-btn');
+    addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const qtySelect = card.querySelector(`#qty-${product.id}`);
+        const qty = parseInt(qtySelect.value);
+        addToCart(product.id, qty);
+    });
+
     return card;
 }
 
@@ -286,10 +305,10 @@ function filterProducts(category) {
 }
 
 // Add to Cart
-function addToCart(productId) {
+function addToCart(productId, quantityParam) {
     const product = products.find(p => p.id === productId);
-    const quantity = parseInt(document.getElementById(`qty-${productId}`).value);
-    
+    const quantity = typeof quantityParam === 'number' ? quantityParam : parseInt(document.getElementById(`qty-${productId}`).value);
+
     if (cart[productId]) {
         cart[productId].quantity += quantity;
     } else {
@@ -298,7 +317,7 @@ function addToCart(productId) {
             quantity: quantity
         };
     }
-    
+
     saveCart();
     updateCartCount();
     showNotification(`${product.name} added to cart!`);
@@ -430,32 +449,41 @@ function closeCheckout() {
 // Complete Checkout
 function completeCheckout(event) {
     event.preventDefault();
-    
-    const orderId = 'APEX-' + Date.now();
-    
-    // Build cart items string
-    let cartItems = '';
+
+    const form = event.target;
+    const fullName = form.fullName ? form.fullName.value : '';
+    const email = form.email ? form.email.value : '';
+
+    if (Object.keys(cart).length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+
+    // Build summary HTML for purchased items
+    let itemsHtml = '<ul style="padding-left:1rem">';
+    let total = 0;
     for (let productId in cart) {
         const item = cart[productId];
-        cartItems += item.name + ' x' + item.quantity + ' = $' + (item.price * item.quantity).toFixed(2) + ' | ';
+        const itemTotal = item.product.price * item.quantity;
+        total += itemTotal;
+        itemsHtml += `<li>${item.product.name} x${item.quantity} — $${itemTotal.toFixed(2)}</li>`;
     }
-    
-    // Add cart items to hidden field
-    document.getElementById('cartItems').value = 'Order ID: ' + orderId + '\n\nItems: ' + cartItems;
-    
-    // Show confirmation
+    itemsHtml += '</ul>';
+
+    // Populate confirmation modal with name, email and items
+    document.getElementById('confirm-name').textContent = fullName;
+    document.getElementById('confirm-email').textContent = email;
+    document.getElementById('confirm-items').innerHTML = itemsHtml;
+    document.getElementById('confirm-total').textContent = total.toFixed(2);
+
+    // Show confirmation and clear checkout modal
     document.getElementById('checkout-modal').style.display = 'none';
     document.getElementById('confirmation-modal').style.display = 'block';
-    document.getElementById('order-id').textContent = orderId;
-    
-    // Clear cart
+
+    // Clear cart locally (no external submission)
     cart = {};
     saveCart();
-    
-    // Submit the form to Formspree
-    setTimeout(() => {
-        event.target.submit();
-    }, 500);
+    updateCartCount();
 }
     updateCartCount();
 
@@ -505,6 +533,7 @@ window.onclick = function(event) {
     const cartModal = document.getElementById('cart-modal');
     const checkoutModal = document.getElementById('checkout-modal');
     const confirmationModal = document.getElementById('confirmation-modal');
+    const productModal = document.getElementById('product-modal');
     
     if (event.target === cartModal) {
         cartModal.style.display = 'none';
@@ -514,6 +543,9 @@ window.onclick = function(event) {
     }
     if (event.target === confirmationModal) {
         confirmationModal.style.display = 'none';
+    }
+    if (productModal && event.target === productModal) {
+        productModal.style.display = 'none';
     }
 }
 
@@ -546,4 +578,50 @@ function closeMenu() {
     
     hamburger.classList.remove('active');
     navMenu.classList.remove('active');
+}
+
+// Product Modal Functions
+function showProductModal(product) {
+    const modal = document.getElementById('product-modal');
+    if (!modal) return;
+
+    document.getElementById('product-image-large').style.backgroundImage = `url('${product.image}')`;
+    document.getElementById('product-title').textContent = product.name;
+    document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
+    document.getElementById('product-desc').textContent = product.description || '';
+
+    const sizeOptions = document.getElementById('size-options');
+    sizeOptions.innerHTML = '';
+
+    let sizes = [];
+    if (product.category === 'shoes') sizes = ['6','7','8','9','10','11','12'];
+    else if (product.category === 'apparel') sizes = ['XS','S','M','L','XL'];
+    else if (product.category === 'accessories') sizes = ['One Size'];
+
+    sizes.forEach((s, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'size-btn';
+        btn.textContent = s;
+        btn.addEventListener('click', () => {
+            sizeOptions.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+        if (i === 0) btn.classList.add('active');
+        sizeOptions.appendChild(btn);
+    });
+
+    // set modal add-to-cart behavior
+    const modalAdd = document.getElementById('modal-add-to-cart');
+    modalAdd.onclick = function() {
+        const qty = parseInt(document.getElementById('modal-qty').value);
+        addToCart(product.id, qty);
+        modal.style.display = 'none';
+    };
+
+    modal.style.display = 'block';
+}
+
+function closeProductModal() {
+    const modal = document.getElementById('product-modal');
+    if (modal) modal.style.display = 'none';
 }

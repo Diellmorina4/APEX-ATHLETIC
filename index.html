@@ -61,12 +61,7 @@
     <!-- Products Section -->
     <section id="products" class="products-section">
         <h2>Our Collection</h2>
-        <div class="filter-buttons">
-            <button class="filter-btn active" onclick="filterProducts('all')">All</button>
-            <button class="filter-btn" onclick="filterProducts('shoes')">Shoes</button>
-            <button class="filter-btn" onclick="filterProducts('apparel')">Apparel</button>
-            <button class="filter-btn" onclick="filterProducts('accessories')">Accessories</button>
-        </div>
+        <!-- Filter buttons removed as requested -->
         <div class="products-grid" id="products-grid">
             <!-- Products will be loaded here by JavaScript -->
         </div>
@@ -95,7 +90,7 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <h2>Contact Us</h2>
-        <form class="contact-form" action="https://formspree.io/f/xvzkbvrp" method="POST">
+        <form class="contact-form" action="https://formspree.io/f/xzdeanjj" method="POST">
             <input type="text" name="name" placeholder="Your Name" required>
             <input type="email" name="email" placeholder="Your Email" required>
             <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
@@ -128,7 +123,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeCheckout()">&times;</span>
             <h2>Checkout</h2>
-            <form class="checkout-form" action="https://formspree.io/f/xvzkbvrp" method="POST">
+            <form class="checkout-form" action="https://formspree.io/f/xzdeanjj" method="POST">
                 <div class="form-section">
                     <h3>Shipping Information</h3>
                     <input type="text" name="fullName" placeholder="Full Name" required>
@@ -137,14 +132,7 @@
                     <input type="text" name="city" placeholder="City" required>
                     <input type="text" name="zipCode" placeholder="ZIP Code" required>
                 </div>
-                <div class="form-section">
-                    <h3>Payment Information</h3>
-                    <input type="text" name="cardNumber" placeholder="Card Number" pattern="\d{16}" maxlength="16" required>
-                    <div class="form-row">
-                        <input type="text" name="cardExpiry" placeholder="MM/YY" pattern="\d{2}/\d{2}" maxlength="5" required>
-                        <input type="text" name="cardCVV" placeholder="CVV" pattern="\d{3}" maxlength="3" required>
-                    </div>
-                </div>
+                <!-- Payment Information removed: summary will display name, email and purchased items only -->
                 <input type="hidden" name="cartItems" id="cartItems" value="">
                 <button type="submit" class="btn btn-primary">Complete Purchase</button>
             </form>
@@ -156,14 +144,43 @@
         <div class="modal-content">
             <span class="close" onclick="closeConfirmation()">&times;</span>
             <div class="confirmation-content">
-                <h2>✓ Order Confirmed</h2>
-                <p>Thank you for your purchase!</p>
-                <p>Order ID: <strong id="order-id"></strong></p>
-                <p>You will receive a confirmation email shortly.</p>
+                <h2>✓ Purchase Summary</h2>
+                <p><strong>Name:</strong> <span id="confirm-name"></span></p>
+                <p><strong>Email:</strong> <span id="confirm-email"></span></p>
+                <div id="confirm-items"></div>
+                <h3>Total: $<span id="confirm-total">0.00</span></h3>
                 <button class="btn btn-primary" onclick="closeConfirmation()">Continue Shopping</button>
             </div>
         </div>
     </div>
+
+        <!-- Product Detail Modal -->
+        <div id="product-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeProductModal()">&times;</span>
+                <div class="product-detail">
+                    <div id="product-image-large" style="height:300px; background-size:contain; background-repeat:no-repeat; background-position:center; margin-bottom:1rem;"></div>
+                    <h2 id="product-title"></h2>
+                    <p id="product-price" style="color:#00d4ff; font-weight:bold;"></p>
+                    <p id="product-desc"></p>
+                    <div id="size-section">
+                        <h4>Sizes</h4>
+                        <div id="size-options" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;"></div>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; align-items:center; margin-top:1rem;">
+                        <label for="modal-qty">Qty:</label>
+                        <select id="modal-qty">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button class="btn btn-primary" id="modal-add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <!-- Footer -->
     <footer class="footer">

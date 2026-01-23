@@ -679,6 +679,28 @@ body {
     font-size: 1.1rem;
 }
 
+/* Product Detail Modal Styles */
+.product-detail h2 {
+    margin-top: 0.5rem;
+}
+#product-image-large {
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+#size-options .size-btn {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+}
+#size-options .size-btn.active {
+    background: #00d4ff;
+    color: black;
+    border-color: #00d4ff;
+}
+
 /* Footer */
 .footer {
     background: #1a1a1a;
