@@ -20,18 +20,31 @@
                     <text x="100" y="165" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#00d4ff" text-anchor="middle">APEX</text>
                 </svg>
             </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#products" class="nav-link">Shop</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <div class="language-switcher">
-                <button class="lang-btn active" onclick="switchLanguage('en')">ENG</button>
-                <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-            <div class="cart-icon" onclick="toggleCart()">
-                🛒 <span id="cart-count">0</span>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link" onclick="closeMenu()">Home</a></li>
+                <li><a href="#products" class="nav-link" onclick="closeMenu()">Shop</a></li>
+                <li><a href="#about" class="nav-link" onclick="closeMenu()">About</a></li>
+                <li><a href="#contact" class="nav-link" onclick="closeMenu()">Contact</a></li>
+                <li class="mobile-only">
+                    <div class="language-switcher">
+                        <button class="lang-btn active" onclick="switchLanguage('en')">ENG</button>
+                        <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+                    </div>
+                </li>
+            </ul>
+            <div class="nav-actions">
+                <div class="language-switcher">
+                    <button class="lang-btn active" onclick="switchLanguage('en')">ENG</button>
+                    <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+                </div>
+                <div class="cart-icon" onclick="toggleCart()">
+                    🛒 <span id="cart-count">0</span>
+                </div>
             </div>
         </div>
     </nav>
