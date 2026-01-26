@@ -454,28 +454,6 @@ function completeCheckout(event) {
     const fullName = form.fullName ? form.fullName.value : '';
     const email = form.email ? form.email.value : '';
 
-    const paymentMethod = form.paymentMethod ? form.paymentMethod.value : 'card';
-
-    // If card payment selected, perform simple client-side validation
-    if (paymentMethod === 'card') {
-        const cardNumber = form.cardNumber ? form.cardNumber.value.replace(/\s+/g, '') : '';
-        const expiry = form.expiry ? form.expiry.value.trim() : '';
-        const cvv = form.cvv ? form.cvv.value.trim() : '';
-
-        if (!cardNumber || cardNumber.length < 12 || cardNumber.length > 19 || !/^[0-9]+$/.test(cardNumber)) {
-            alert('Please enter a valid card number');
-            return;
-        }
-        if (!/^[0-9]{2}\/[0-9]{2}$/.test(expiry)) {
-            alert('Expiry must be in MM/YY format');
-            return;
-        }
-        if (!/^[0-9]{3,4}$/.test(cvv)) {
-            alert('Please enter a valid CVV');
-            return;
-        }
-    }
-
     if (Object.keys(cart).length === 0) {
         alert('Your cart is empty!');
         return;
@@ -495,47 +473,17 @@ function completeCheckout(event) {
     // Populate confirmation modal with name, email and items
     document.getElementById('confirm-name').textContent = fullName;
     document.getElementById('confirm-email').textContent = email;
-    document.getElementById('confirm-payment').textContent = paymentMethod === 'card' ? (form.cardNumber ? ('Card ending ' + form.cardNumber.value.replace(/\s+/g,'').slice(-4)) : 'Card') : 'Cash (pay on delivery)';
     document.getElementById('confirm-items').innerHTML = itemsHtml;
     document.getElementById('confirm-total').textContent = total.toFixed(2);
 
-    // Try to submit sanitized data to Formspree so you receive an email
-    (async () => {
-        try {
-            // Build sanitized FormData
-            const fd = new FormData();
-            fd.append('fullName', fullName);
-            fd.append('email', email);
-            fd.append('address', form.address ? form.address.value : '');
-            fd.append('city', form.city ? form.city.value : '');
-            fd.append('zipCode', form.zipCode ? form.zipCode.value : '');
-            fd.append('paymentMethod', paymentMethod);
-            // include masked card last4 if card selected
-            if (paymentMethod === 'card' && form.cardNumber && form.cardNumber.value) {
-                const digits = form.cardNumber.value.replace(/\s+/g, '');
-                fd.append('cardLast4', digits.slice(-4));
-            }
-            fd.append('cartItems', itemsHtml.replace(/<[^>]+>/g, '\n'));
-            fd.append('total', total.toFixed(2));
+    // Show confirmation and clear checkout modal
+    document.getElementById('checkout-modal').style.display = 'none';
+    document.getElementById('confirmation-modal').style.display = 'block';
 
-            const actionUrl = form.action || '/';
-            const resp = await fetch(actionUrl, { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } });
-            if (!resp.ok) {
-                console.warn('Formspree submission returned non-OK status', resp.status);
-            }
-        } catch (err) {
-            console.error('Error sending checkout to Formspree:', err);
-        } finally {
-            // Show confirmation and clear checkout modal regardless of email result
-            document.getElementById('checkout-modal').style.display = 'none';
-            document.getElementById('confirmation-modal').style.display = 'block';
-
-            // Clear cart locally
-            cart = {};
-            saveCart();
-            updateCartCount();
-        }
-    })();
+    // Clear cart locally (no external submission)
+    cart = {};
+    saveCart();
+    updateCartCount();
 }
     updateCartCount();
 
@@ -614,32 +562,6 @@ style.innerHTML = `
     }
 `;
 document.head.appendChild(style);
-
-// Payment fields toggle and form hookup
-function togglePaymentFields() {
-    const method = document.querySelector('input[name="paymentMethod"]:checked')?.value;
-    const cardFields = document.getElementById('card-fields');
-    if (!cardFields) return;
-    if (method === 'card') {
-        cardFields.style.display = 'block';
-        cardFields.querySelectorAll('input').forEach(i => i.required = true);
-    } else {
-        cardFields.style.display = 'none';
-        cardFields.querySelectorAll('input').forEach(i => { i.required = false; i.value = ''; });
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // wire payment method radios
-    const radios = document.querySelectorAll('input[name="paymentMethod"]');
-    radios.forEach(r => r.addEventListener('change', togglePaymentFields));
-    // initialize display
-    togglePaymentFields();
-
-    // attach checkout form submit handler
-    const checkoutForm = document.getElementById('checkout-form');
-    if (checkoutForm) checkoutForm.addEventListener('submit', completeCheckout);
-});
 
 // Hamburger Menu Functions
 function toggleMenu() {
