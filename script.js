@@ -1,22 +1,21 @@
 // Products Data (imported from apex_products.json — images mapped to local site-*.jpg when available)
 const products = [
-    { id: 1, name: "Nike React Miler", category: "shoes", price: 130.00, image: "site-1.jpg", description: "", rating: 4.5, reviews: 120 },
-    { id: 2, name: "Nike Air Zoom Pegasus 37", category: "shoes", price: 120.00, image: "site-2.jpg", description: "", rating: 4.5, reviews: 98 },
-    { id: 3, name: "Nike Joyride Run Flyknit", category: "shoes", price: 170.00, image: "site-3.jpg", description: "", rating: 4.4, reviews: 85 },
-    { id: 4, name: "Nike Mercurial Vapor 13 Elite FG", category: "shoes", price: 250.00, image: "site-4.jpg", description: "", rating: 4.6, reviews: 64 },
-    { id: 5, name: "Nike Phantom Vision Elite Dynamic Fit FG", category: "shoes", price: 280.00, image: "site-5.jpg", description: "", rating: 4.6, reviews: 72 },
-    { id: 6, name: "Nike Phantom Venom Academy FG", category: "shoes", price: 150.00, image: "site-6.jpg", description: "", rating: 4.4, reviews: 54 },
-    { id: 7, name: "Nike Mercurial Vapor 13 Elite Tech Craft FG", category: "shoes", price: 280.00, image: "site-7.jpg", description: "", rating: 4.7, reviews: 41 },
-    { id: 8, name: "Nike Mercurial Superfly 7 Pro MDS FG", category: "shoes", price: 270.00, image: "site-8.jpg", description: "", rating: 4.7, reviews: 53 },
-    { id: 9, name: "Nike Air Force 1", category: "shoes", price: 120.00, image: "site-9.jpg", description: "", rating: 4.6, reviews: 210 },
-    { id: 10, name: "Nike Air Max 90", category: "shoes", price: 140.00, image: "site-10.jpg", description: "", rating: 4.5, reviews: 147 },
-    { id: 11, name: "Nike Air Max 90 LTR", category: "shoes", price: 160.00, image: "site-11.jpg", description: "", rating: 4.5, reviews: 93 },
-    { id: 12, name: "Nike Joyride Dual Run", category: "shoes", price: 140.00, image: "site-12.jpg", description: "", rating: 4.4, reviews: 67 },
-    { id: 13, name: "Nike Renew Run", category: "shoes", price: 110.00, image: "site-13.jpg", description: "", rating: 4.3, reviews: 88 },
-    { id: 14, name: "Nizza X Disney", category: "shoes", price: 100.00, image: "site-14.jpg", description: "", rating: 4.2, reviews: 52 },
-    { id: 15, name: "X_PLR", category: "shoes", price: 130.00, image: "site-15.jpg", description: "", rating: 4.3, reviews: 46 },
-    { id: 16, name: "NMD_R1", category: "shoes", price: 180.00, image: "site-16.jpg", description: "", rating: 4.5, reviews: 71 },
-    { id: 17, name: "Extra Product", category: "shoes", price: 0.00, image: "", description: "", rating: 4.0, reviews: 0 }
+    { id: 1, name: "Nike React Miler", category: "shoes", price: 130.00, image: "images/site-1.jpg", description: "", rating: 4.5, reviews: 120 },
+    { id: 2, name: "Nike Air Zoom Pegasus 37", category: "shoes", price: 120.00, image: "images/site-2.jpg", description: "", rating: 4.5, reviews: 98 },
+    { id: 3, name: "Nike Joyride Run Flyknit", category: "shoes", price: 170.00, image: "images/site-3.jpg", description: "", rating: 4.4, reviews: 85 },
+    { id: 4, name: "Nike Mercurial Vapor 13 Elite FG", category: "shoes", price: 250.00, image: "images/site-4.jpg", description: "", rating: 4.6, reviews: 64 },
+    { id: 5, name: "Nike Phantom Vision Elite Dynamic Fit FG", category: "shoes", price: 280.00, image: "images/site-5.jpg", description: "", rating: 4.6, reviews: 72 },
+    { id: 6, name: "Nike Phantom Venom Academy FG", category: "shoes", price: 150.00, image: "images/site-6.jpg", description: "", rating: 4.4, reviews: 54 },
+    { id: 7, name: "Nike Mercurial Vapor 13 Elite Tech Craft FG", category: "shoes", price: 280.00, image: "images/site-7.jpg", description: "", rating: 4.7, reviews: 41 },
+    { id: 8, name: "Nike Mercurial Superfly 7 Pro MDS FG", category: "shoes", price: 270.00, image: "images/site-8.jpg", description: "", rating: 4.7, reviews: 53 },
+    { id: 9, name: "Nike Air Force 1", category: "shoes", price: 120.00, image: "images/site-9.jpg", description: "", rating: 4.6, reviews: 210 },
+    { id: 10, name: "Nike Air Max 90", category: "shoes", price: 140.00, image: "images/site-10.jpg", description: "", rating: 4.5, reviews: 147 },
+    { id: 11, name: "Nike Air Max 90 LTR", category: "shoes", price: 160.00, image: "images/site-11.jpg", description: "", rating: 4.5, reviews: 93 },
+    { id: 12, name: "Nike Joyride Dual Run", category: "shoes", price: 140.00, image: "images/site-12.jpg", description: "", rating: 4.4, reviews: 67 },
+    { id: 13, name: "Nike Renew Run", category: "shoes", price: 110.00, image: "images/site-13.jpg", description: "", rating: 4.3, reviews: 88 },
+    { id: 14, name: "Nizza X Disney", category: "shoes", price: 100.00, image: "images/site-14.jpg", description: "", rating: 4.2, reviews: 52 },
+    { id: 15, name: "X_PLR", category: "shoes", price: 130.00, image: "images/site-15.jpg", description: "", rating: 4.3, reviews: 46 },
+    { id: 16, name: "NMD_R1", category: "shoes", price: 180.00, image: "images/site-16.jpg", description: "", rating: 4.5, reviews: 71 }
 ];
 
 // Shopping Cart
