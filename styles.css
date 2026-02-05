@@ -730,6 +730,29 @@ body {
     font-family: inherit;
 }
 
+.payment-options {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    margin-top: 100px;
+}
+
+.payment-label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin: 0;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.payment-label input[type="radio"] {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
 .form-row {
     display: flex;
     gap: 1rem;

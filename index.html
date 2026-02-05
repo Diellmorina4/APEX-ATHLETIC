@@ -166,8 +166,10 @@
 
                 <div class="form-section">
                     <h3>Payment Method</h3>
-                    <label style="margin-right:1rem;"><input type="radio" name="paymentMethod" value="card" checked> Card</label>
-                    <label><input type="radio" name="paymentMethod" value="cash"> Cash</label>
+                    <div class="payment-options">
+                        <label class="payment-label"><input type="radio" name="paymentMethod" value="card" checked> Card</label>
+                        <label class="payment-label"><input type="radio" name="paymentMethod" value="cash"> Cash</label>
+                    </div>
 
                     <div id="card-fields" style="margin-top:1rem;">
                         <input type="text" name="cardNumber" id="cardNumber" placeholder="Card Number">
