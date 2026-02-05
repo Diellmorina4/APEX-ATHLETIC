@@ -477,14 +477,81 @@ body {
 /* Contact Section */
 .contact {
     padding: 4rem 2rem;
-    max-width: 600px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 .contact h2 {
     text-align: center;
     font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.contact-wrapper {
+    display: grid;
+    grid-template-columns: 0.9fr 1.2fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.contact-info {
+    background: white;
+    color: #333;
+    padding:   1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.contact-info h3 {
+    font-size: 1.5rem;
     margin-bottom: 2rem;
+    color: #333;
+}
+
+.info-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+    margin-left: -0.5rem;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    min-width: 50px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-item i {
+    font-size: 1.5rem;
+    min-width: 50px;
+    text-align: center;
+}
+
+.info-item h4 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.info-item p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.info-item a {
+    color: #00d4ff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.info-item a:hover {
+    color: #00ffff;
+    text-decoration: underline;
 }
 
 .contact-form {
@@ -504,6 +571,16 @@ body {
 
 .contact-form textarea {
     resize: vertical;
+}
+
+@media (max-width: 768px) {
+    .contact-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact h2 {
+        font-size: 2rem;
+    }
 }
 
 /* Modal */

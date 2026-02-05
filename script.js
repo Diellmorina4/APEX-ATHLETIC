@@ -84,7 +84,7 @@ const translations = {
         checkout: "Paguaj",
         clear_cart: "Zbraz Shportën",
         complete_purchase: "Përfundo Blerjen",
-        shop_now: "Bli Tani",
+        shop_now: "Bleni Tani",
         our_collection: "Koleksioni Ynë",
         all: "Të Gjitha",
         shoes: "Këpucë",
@@ -98,7 +98,7 @@ const translations = {
         innovation_desc: "Teknologjia e prerë për performancën",
         sustainability: "Qëndrueshmëria",
         sustainability_desc: "Praktikat e prodhimit miqësore me mjedisin",
-        contact_title: "Kontaktu Mund",
+        contact_title: "Na Kontaktoni",
         name_placeholder: "Emri Juaj",
         email_placeholder: "Email-i Juaj",
         message_placeholder: "Mesazhi Juaj",
@@ -118,12 +118,11 @@ const translations = {
         cvv: "CVV",
         order_confirmed: "Porosi e Konfirmuar",
         thank_you: "Faleminderit për blerjen tuaj!",
-        order_id: "ID i Porositë:",
-        email_confirmation: "Ju do të merrni një email konfirmimi në breve.",
+        order_id: "ID e Porosis:",
+        email_confirmation: "Ju do të merrni një email konfirmimi se shpejti.",
         continue_shopping: "Vazhdoni të Blini",
         add_to_cart: "Shto në Shportë",
         your_cart_empty: "Shporta juaj është bosh",
-        copyright: "© 2026 APEX Athletic. Të gjitha të drejtat e rezervuara."
     }
 };
 

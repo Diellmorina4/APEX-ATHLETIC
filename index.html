@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APEX - Athletic Brand</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -90,12 +91,40 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <h2>Contact Us</h2>
-        <form class="contact-form" action="https://formspree.io/f/mdagqpjy" method="POST">
-            <input type="text" name="name" placeholder="Your Name" required>
-            <input type="email" name="email" placeholder="Your Email" required>
-            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-        </form>
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <h3>Get in Touch</h3>
+                <div class="info-item">
+                    <i class="fa-solid fa-phone" style="color: #df0c0c;"></i>
+                    <div>
+                        <h4>Phone</h4>
+                        <p>+38345394537</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-location-dot" style="color: #df0c0c;"></i>
+                    <div>
+                        <h4>Location</h4>
+                        <p> Athletic Boulevard<br>New York, NY 10001</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-envelope" style="color: #df0c0c;"></i>
+                    <div>
+                        <h4>Email</h4>
+                        <p><a href="mailto:farismorina69@gmail.com">info@apexathletic.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <form class="contact-form" action="https://formspree.io/f/mdagqpjy" method="POST">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                <input type="hidden" name="_subject" value="New Contact Form Submission from APEX Athletic">
+                <input type="hidden" name="_replyto" value="user_email">
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
     </section>
 
     <!-- Shopping Cart Modal -->
@@ -124,6 +153,8 @@
             <span class="close" onclick="closeCheckout()">&times;</span>
             <h2>Checkout</h2>
             <form id="checkout-form" class="checkout-form" action="https://formspree.io/f/mdagqpjy" method="POST">
+                <input type="hidden" name="_subject" value="New Order from APEX Athletic">
+                <input type="hidden" name="_replyto" value="user_email">
                 <div class="form-section">
                     <h3>Shipping Information</h3>
                     <input type="text" name="fullName" placeholder="Full Name" required>
