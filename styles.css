@@ -764,6 +764,22 @@ body {
     box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
 }
 
+/* Radios and checkboxes inside form sections should not stretch full width */
+.form-section input[type="radio"],
+.form-section input[type="checkbox"] {
+    width: auto;
+    display: inline-block;
+    margin-right: 0.6rem;
+    vertical-align: middle;
+    transform: translateY(7px);
+}
+
+.form-section label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
 .form-row {
     display: flex;
     gap: 1rem;
@@ -1142,7 +1158,7 @@ body {
 .form-section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 10px;
 }
 
 .form-section h3 {
