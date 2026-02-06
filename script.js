@@ -73,7 +73,19 @@ const translations = {
         continue_shopping: "Continue Shopping",
         add_to_cart: "Add to Cart",
         your_cart_empty: "Your cart is empty",
-        copyright: "© 2026 APEX Athletic. All rights reserved."
+        copyright: "© 2026 APEX Athletic. All rights reserved.",
+        account: "Account",
+        payment_methods: "Payment Methods",
+        manage_payment: "Manage Payment Methods",
+        add_card: "Add Card",
+        saved_cards: "Saved Cards",
+        card_type: "Card Type",
+        save_card: "Save Card",
+        remove_card: "Remove Card",
+        add_payment_method: "Add Payment Method",
+        card_saved: "Card saved successfully!",
+        card_removed: "Card removed successfully!",
+        card_ending_in: "Card ending in"
     },
     sq: {
         home: "Kreu",
@@ -123,6 +135,19 @@ const translations = {
         continue_shopping: "Vazhdoni të Blini",
         add_to_cart: "Shto në Shportë",
         your_cart_empty: "Shporta juaj është bosh",
+        copyright: "© 2026 APEX Athletic. Të gjitha të drejtat e rezervuara.",
+        account: "Llogaria",
+        payment_methods: "Metodat e Pagesës",
+        manage_payment: "Menaxhoni Metodat e Pagesës",
+        add_card: "Shto Kartë",
+        saved_cards: "Kartat e Ruajtura",
+        card_type: "Lloji i Kartës",
+        save_card: "Ruaj Kartën",
+        remove_card: "Hiq Kartën",
+        add_payment_method: "Shto Metodë Pagese",
+        card_saved: "Karta u ruajt me sukses!",
+        card_removed: "Karta u hoq me sukses!",
+        card_ending_in: "Karta përfundon me"
     }
 };
 
@@ -437,6 +462,10 @@ function checkout() {
     
     document.getElementById('cart-modal').style.display = 'none';
     document.getElementById('checkout-modal').style.display = 'block';
+    
+    // Load saved payment methods
+    loadSavedCardsInCheckout();
+    togglePaymentFields();
 }
 
 // Close Checkout
@@ -454,23 +483,56 @@ function completeCheckout(event) {
 
     const paymentMethod = form.paymentMethod ? form.paymentMethod.value : 'card';
 
+    let cardNumber = '';
+    let expiry = '';
+    let cvv = '';
+
     // If card payment selected, perform simple client-side validation
     if (paymentMethod === 'card') {
-        const cardNumber = form.cardNumber ? form.cardNumber.value.replace(/\s+/g, '') : '';
-        const expiry = form.expiry ? form.expiry.value.trim() : '';
-        const cvv = form.cvv ? form.cvv.value.trim() : '';
-
-        if (!cardNumber || cardNumber.length < 12 || cardNumber.length > 19 || !/^[0-9]+$/.test(cardNumber)) {
-            alert('Please enter a valid card number');
-            return;
-        }
-        if (!/^[0-9]{2}\/[0-9]{2}$/.test(expiry)) {
-            alert('Expiry must be in MM/YY format');
-            return;
-        }
-        if (!/^[0-9]{3,4}$/.test(cvv)) {
-            alert('Please enter a valid CVV');
-            return;
+        // Check if a saved card is selected
+        const savedCardInput = document.querySelector('input[name="savedCard"]:checked');
+        
+        if (savedCardInput) {
+            // Use saved card
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const allPayments = JSON.parse(localStorage.getItem('apexPayments') || '{}');
+            const userPayments = allPayments[currentUser.email] || [];
+            const selectedCard = userPayments[savedCardInput.value];
+            
+            if (selectedCard) {
+                cardNumber = selectedCard.number;
+                expiry = selectedCard.expiry;
+                cvv = selectedCard.cvv;
+            } else {
+                alert('Selected card not found');
+                return;
+            }
+        } else {
+            // Use manually entered card
+            cardNumber = form.cardNumber ? form.cardNumber.value.replace(/\s+/g, '') : '';
+            expiry = form.expiry ? form.expiry.value.trim() : '';
+            cvv = form.cvv ? form.cvv.value.trim() : '';
+            
+            // If new card section is visible, validate the input
+            const addNewCardSection = document.getElementById('add-new-card-section');
+            if (addNewCardSection && addNewCardSection.style.display !== 'none') {
+                if (!cardNumber || cardNumber.length < 12 || cardNumber.length > 19 || !/^[0-9]+$/.test(cardNumber)) {
+                    alert('Please enter a valid card number');
+                    return;
+                }
+                if (!/^[0-9]{2}\/[0-9]{2}$/.test(expiry)) {
+                    alert('Expiry must be in MM/YY format');
+                    return;
+                }
+                if (!/^[0-9]{3,4}$/.test(cvv)) {
+                    alert('Please enter a valid CVV');
+                    return;
+                }
+            } else {
+                // If new card section is not visible and no saved card selected, show error
+                alert('Please select a saved card or add a new card');
+                return;
+            }
         }
     }
 
@@ -493,7 +555,7 @@ function completeCheckout(event) {
     // Populate confirmation modal with name, email and items
     document.getElementById('confirm-name').textContent = fullName;
     document.getElementById('confirm-email').textContent = email;
-    document.getElementById('confirm-payment').textContent = paymentMethod === 'card' ? (form.cardNumber ? ('Card ending ' + form.cardNumber.value.replace(/\s+/g,'').slice(-4)) : 'Card') : 'Cash (pay on delivery)';
+    document.getElementById('confirm-payment').textContent = paymentMethod === 'card' ? ('Card ending ' + cardNumber.slice(-4)) : 'Cash (pay on delivery)';
     document.getElementById('confirm-items').innerHTML = itemsHtml;
     document.getElementById('confirm-total').textContent = total.toFixed(2);
 
@@ -509,9 +571,8 @@ function completeCheckout(event) {
             fd.append('zipCode', form.zipCode ? form.zipCode.value : '');
             fd.append('paymentMethod', paymentMethod);
             // include masked card last4 if card selected
-            if (paymentMethod === 'card' && form.cardNumber && form.cardNumber.value) {
-                const digits = form.cardNumber.value.replace(/\s+/g, '');
-                fd.append('cardLast4', digits.slice(-4));
+            if (paymentMethod === 'card' && cardNumber) {
+                fd.append('cardLast4', cardNumber.slice(-4));
             }
             fd.append('cartItems', itemsHtml.replace(/<[^>]+>/g, '\n'));
             fd.append('total', total.toFixed(2));
@@ -520,6 +581,28 @@ function completeCheckout(event) {
             const resp = await fetch(actionUrl, { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } });
             if (!resp.ok) {
                 console.warn('Formspree submission returned non-OK status', resp.status);
+                // Attempt mailto fallback using the site's contact email if available
+                try {
+                    const mailAnchor = document.querySelector('a[href^="mailto:"]');
+                    const recipient = mailAnchor ? mailAnchor.getAttribute('href').replace('mailto:', '') : '';
+                    if (recipient) {
+                        const subject = encodeURIComponent('New Order from APEX Athletic - ' + fullName);
+                        const bodyLines = [];
+                        bodyLines.push('Name: ' + fullName);
+                        bodyLines.push('Email: ' + email);
+                        bodyLines.push('Payment method: ' + (paymentMethod === 'card' ? ('Card ending ' + (cardNumber ? cardNumber.slice(-4) : '')) : 'Cash (pay on delivery)'));
+                        bodyLines.push('\nItems:');
+                        bodyLines.push(itemsHtml.replace(/<[^>]+>/g, '\n'));
+                        bodyLines.push('\nTotal: $' + total.toFixed(2));
+                        const mailto = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+                        window.location.href = mailto;
+                        showNotification('Opened your mail client to send the order (fallback)');
+                    } else {
+                        console.warn('No mailto recipient found for fallback');
+                    }
+                } catch (mf) {
+                    console.error('Mailto fallback failed', mf);
+                }
             }
         } catch (err) {
             console.error('Error sending checkout to Formspree:', err);
@@ -535,7 +618,6 @@ function completeCheckout(event) {
         }
     })();
 }
-    updateCartCount();
 
 
 // Close Confirmation
@@ -614,16 +696,71 @@ style.innerHTML = `
 document.head.appendChild(style);
 
 // Payment fields toggle and form hookup
+function loadSavedCardsInCheckout() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+    
+    const allPayments = JSON.parse(localStorage.getItem('apexPayments') || '{}');
+    const userPayments = allPayments[currentUser.email] || [];
+    
+    const savedCardsList = document.getElementById('saved-cards-list');
+    if (!savedCardsList) return;
+    
+    savedCardsList.innerHTML = '';
+    
+    if (userPayments.length === 0) {
+        savedCardsList.innerHTML = '<p style="color: #999; font-size: 0.9rem;">No saved cards. Add a new payment method below.</p>';
+        return;
+    }
+    
+    const title = document.createElement('p');
+    title.textContent = 'Saved Payment Methods:';
+    title.style.cssText = 'margin-bottom: 0.5rem; color: #333; font-weight: bold;';
+    savedCardsList.appendChild(title);
+    
+    userPayments.forEach((payment, index) => {
+        const lastFour = payment.number.replace(/\s+/g, '').slice(-4);
+        const label = document.createElement('label');
+        label.style.cssText = 'display: block; margin-bottom: 0.5rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; cursor: pointer;';
+        
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'savedCard';
+        input.value = index;
+        input.style.marginRight = '0.5rem';
+        
+        const text = document.createElement('span');
+        text.textContent = `${payment.type} ending in ${lastFour}`;
+        
+        label.appendChild(input);
+        label.appendChild(text);
+        savedCardsList.appendChild(label);
+    });
+    
+    const divider = document.createElement('p');
+    divider.textContent = 'Or';
+    divider.style.cssText = 'text-align: center; color: #999; margin: 1rem 0; font-size: 0.9rem;';
+    savedCardsList.appendChild(divider);
+}
+
 function togglePaymentFields() {
     const method = document.querySelector('input[name="paymentMethod"]:checked')?.value;
     const cardFields = document.getElementById('card-fields');
     if (!cardFields) return;
     if (method === 'card') {
         cardFields.style.display = 'block';
-        cardFields.querySelectorAll('input').forEach(i => i.required = true);
     } else {
         cardFields.style.display = 'none';
-        cardFields.querySelectorAll('input').forEach(i => { i.required = false; i.value = ''; });
+        // Hide the add new card section when switching to cash
+        const addNewCardSection = document.getElementById('add-new-card-section');
+        const addNewCardBtn = document.getElementById('add-new-card-btn');
+        if (addNewCardSection) {
+            addNewCardSection.style.display = 'none';
+            if (addNewCardBtn) {
+                addNewCardBtn.textContent = '+ Add New Card';
+                addNewCardBtn.classList.remove('active');
+            }
+        }
     }
 }
 
@@ -637,6 +774,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // attach checkout form submit handler
     const checkoutForm = document.getElementById('checkout-form');
     if (checkoutForm) checkoutForm.addEventListener('submit', completeCheckout);
+    
+    // Handle "Add New Card" button
+    const addNewCardBtn = document.getElementById('add-new-card-btn');
+    if (addNewCardBtn) {
+        addNewCardBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = document.getElementById('add-new-card-section');
+            const isHidden = section.style.display === 'none';
+            
+            if (isHidden) {
+                section.style.display = 'block';
+                addNewCardBtn.textContent = '- Hide Card Details';
+                addNewCardBtn.classList.add('active');
+            } else {
+                section.style.display = 'none';
+                addNewCardBtn.textContent = '+ Add New Card';
+                addNewCardBtn.classList.remove('active');
+                // Clear the inputs when hiding
+                document.getElementById('cardNumber').value = '';
+                document.getElementById('cardExpiry').value = '';
+                document.getElementById('cardCvv').value = '';
+            }
+        });
+    }
 });
 
 // Hamburger Menu Functions
@@ -701,3 +862,409 @@ function closeProductModal() {
     const modal = document.getElementById('product-modal');
     if (modal) modal.style.display = 'none';
 }
+
+// ========== AUTHENTICATION FUNCTIONS ==========
+
+// Check if user is already logged in on page load
+window.addEventListener('DOMContentLoaded', function() {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+        updateAuthUI(JSON.parse(currentUser));
+    }
+});
+
+function openLoginModal() {
+    document.getElementById('login-modal').style.display = 'block';
+    closeSignupModal();
+    document.getElementById('login-error').textContent = '';
+}
+
+function closeLoginModal() {
+    document.getElementById('login-modal').style.display = 'none';
+}
+
+function openSignupModal() {
+    document.getElementById('signup-modal').style.display = 'block';
+    closeLoginModal();
+    document.getElementById('signup-error').textContent = '';
+}
+
+function closeSignupModal() {
+    document.getElementById('signup-modal').style.display = 'none';
+}
+
+function switchAuthForm() {
+    const loginModal = document.getElementById('login-modal');
+    const signupModal = document.getElementById('signup-modal');
+    
+    if (loginModal.style.display === 'block') {
+        closeLoginModal();
+        openSignupModal();
+    } else {
+        closeSignupModal();
+        openLoginModal();
+    }
+    return false;
+}
+
+function updateAuthUI(user) {
+    // Update desktop version
+    const authButtons = document.getElementById('auth-buttons');
+    const userMenu = document.getElementById('user-menu');
+    const userEmail = document.getElementById('user-email');
+    
+    if (authButtons) authButtons.style.display = 'none';
+    if (userMenu) userMenu.style.display = 'flex';
+    if (userEmail) userEmail.textContent = user.email;
+    
+    // Update mobile version
+    const mobileAuthBtns = document.getElementById('mobile-auth-btns');
+    const mobileUserMenu = document.getElementById('mobile-user-menu');
+    const mobileUserEmail = document.getElementById('mobile-user-email');
+    
+    if (mobileAuthBtns) mobileAuthBtns.style.display = 'none';
+    if (mobileUserMenu) mobileUserMenu.style.display = 'block';
+    if (mobileUserEmail) mobileUserEmail.textContent = user.email;
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    location.reload();
+}
+
+// Login Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+            
+            // Get all users from localStorage
+            const users = JSON.parse(localStorage.getItem('apexUsers') || '[]');
+            const user = users.find(u => u.email === email);
+            
+            if (!user) {
+                errorDiv.textContent = 'Email not found. Please sign up.';
+                return;
+            }
+            
+            if (user.password !== password) {
+                errorDiv.textContent = 'Incorrect password.';
+                return;
+            }
+            
+            // Login successful
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: user.name,
+                email: user.email
+            }));
+            
+            closeLoginModal();
+            document.getElementById('login-form').reset();
+            updateAuthUI({name: user.name, email: user.email});
+            
+            // Show success message
+            alert('Welcome back, ' + user.name + '!');
+        });
+    }
+});
+
+// Signup Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm').value;
+            const errorDiv = document.getElementById('signup-error');
+            
+            // Validation
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match.';
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters.';
+                return;
+            }
+            
+            // Get all users from localStorage
+            let users = JSON.parse(localStorage.getItem('apexUsers') || '[]');
+            
+            // Check if email already exists
+            if (users.find(u => u.email === email)) {
+                errorDiv.textContent = 'Email already registered. Please login.';
+                return;
+            }
+            
+            // Add new user
+            users.push({
+                name: name,
+                email: email,
+                password: password
+            });
+            
+            localStorage.setItem('apexUsers', JSON.stringify(users));
+            
+            // Auto-login after signup
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: name,
+                email: email
+            }));
+            
+            closeSignupModal();
+            document.getElementById('signup-form').reset();
+            updateAuthUI({name: name, email: email});
+            
+            // Show success message
+            alert('Account created successfully! Welcome ' + name + '!');
+        });
+    }
+});
+
+// Close modals when clicking outside
+window.addEventListener('click', function(e) {
+    const loginModal = document.getElementById('login-modal');
+    const signupModal = document.getElementById('signup-modal');
+    
+    if (e.target === loginModal) {
+        closeLoginModal();
+    }
+    if (e.target === signupModal) {
+        closeSignupModal();
+    }
+});
+
+// ========== PAYMENT METHODS FUNCTIONS ==========
+
+function openPaymentModal() {
+    document.getElementById('payment-modal').style.display = 'block';
+    document.getElementById('payment-error').textContent = '';
+    document.getElementById('payment-form').reset();
+    document.getElementById('payment-form').style.display = 'none';
+    // Reset the button
+    const btn = document.getElementById('payment-add-new-card-btn');
+    if (btn) {
+        btn.textContent = '+ Add New Card';
+        btn.classList.remove('active');
+    }
+    displaySavedCards();
+    updatePaymentLabels();
+}
+
+function closePaymentModal() {
+    document.getElementById('payment-modal').style.display = 'none';
+}
+
+function maskCardNumber(cardNumber) {
+    // Remove spaces and keep only digits
+    const cleanNumber = cardNumber.replace(/\s+/g, '');
+    if (cleanNumber.length < 4) return cleanNumber;
+    // Show only last 4 digits
+    const lastFour = cleanNumber.slice(-4);
+    return `**** **** **** ${lastFour}`;
+}
+
+function formatCardNumber(input) {
+    // Format card number with spaces every 4 digits
+    let value = input.value.replace(/\s+/g, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    input.value = formattedValue;
+}
+
+function formatExpiryDate(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+    }
+    input.value = value;
+}
+
+function getLastFourDigits(cardNumber) {
+    return cardNumber.replace(/\s+/g, '').slice(-4);
+}
+
+function displaySavedCards() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+
+    const allPayments = JSON.parse(localStorage.getItem('apexPayments') || '{}');
+    const userPayments = allPayments[currentUser.email] || [];
+
+    const container = document.getElementById('saved-cards-container');
+    
+    if (userPayments.length === 0) {
+        container.innerHTML = '<p style="color: #999; text-align: center;">No saved cards</p>';
+        return;
+    }
+
+    container.innerHTML = '<h3>Saved Cards</h3>';
+    userPayments.forEach((payment, index) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'saved-card';
+        const lastFour = getLastFourDigits(payment.number);
+        cardDiv.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f5f5f5; border-radius: 5px; margin-bottom: 0.5rem;">
+                <div>
+                    <strong>${payment.type}</strong><br>
+                    <span style="color: #666;">Card ending in ${lastFour}</span><br>
+                    <small style="color: #999;">Expires: ${payment.expiry}</small>
+                </div>
+                <button class="btn btn-logout" onclick="removeCard(${index})" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Remove</button>
+            </div>
+        `;
+        container.appendChild(cardDiv);
+    });
+}
+
+function removeCard(index) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+
+    const allPayments = JSON.parse(localStorage.getItem('apexPayments') || '{}');
+    if (allPayments[currentUser.email]) {
+        allPayments[currentUser.email].splice(index, 1);
+        localStorage.setItem('apexPayments', JSON.stringify(allPayments));
+        alert(translations[currentLanguage].card_removed);
+        displaySavedCards();
+    }
+}
+
+function updatePaymentLabels() {
+    const t = translations[currentLanguage];
+    document.getElementById('payment-title').textContent = t.manage_payment;
+    
+    const form = document.getElementById('payment-form');
+    if (form) {
+        // Update form labels
+        const labels = form.querySelectorAll('label, h3');
+        labels.forEach(label => {
+            if (label.tagName === 'H3') {
+                label.textContent = t.add_payment_method;
+            }
+        });
+    }
+}
+
+// Payment Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentForm = document.getElementById('payment-form');
+    if (paymentForm) {
+        // Format card number input
+        const cardInput = document.getElementById('payment-number');
+        if (cardInput) {
+            cardInput.addEventListener('input', function() {
+                formatCardNumber(this);
+            });
+        }
+
+        // Format expiry input
+        const expiryInput = document.getElementById('payment-expiry');
+        if (expiryInput) {
+            expiryInput.addEventListener('input', function() {
+                formatExpiryDate(this);
+            });
+        }
+
+        // Handle form submission
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Please log in first');
+                return;
+            }
+
+            const cardType = document.getElementById('payment-type').value;
+            const cardNumber = document.getElementById('payment-number').value;
+            const expiry = document.getElementById('payment-expiry').value;
+            const cvv = document.getElementById('payment-cvv').value;
+            const errorDiv = document.getElementById('payment-error');
+
+            // Validation
+            if (!cardType || !cardNumber || !expiry || !cvv) {
+                errorDiv.textContent = 'Please fill in all fields';
+                return;
+            }
+
+            if (cardNumber.replace(/\s+/g, '').length < 13) {
+                errorDiv.textContent = 'Invalid card number';
+                return;
+            }
+
+            if (!expiry.match(/^\d{2}\/\d{2}$/)) {
+                errorDiv.textContent = 'Invalid expiry date (use MM/YY)';
+                return;
+            }
+
+            if (cvv.length < 3) {
+                errorDiv.textContent = 'Invalid CVV';
+                return;
+            }
+
+            // Save payment method
+            let allPayments = JSON.parse(localStorage.getItem('apexPayments') || '{}');
+            if (!allPayments[currentUser.email]) {
+                allPayments[currentUser.email] = [];
+            }
+
+            allPayments[currentUser.email].push({
+                type: cardType,
+                number: cardNumber,
+                expiry: expiry,
+                cvv: cvv
+            });
+
+            localStorage.setItem('apexPayments', JSON.stringify(allPayments));
+            errorDiv.textContent = '';
+            alert(translations[currentLanguage].card_saved);
+            paymentForm.reset();
+            displaySavedCards();
+            // Hide the form after adding a card
+            paymentForm.style.display = 'none';
+            const btn = document.getElementById('payment-add-new-card-btn');
+            if (btn) {
+                btn.textContent = '+ Add New Card';
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    // Handle "Add New Card" button in payment modal
+    const paymentAddBtn = document.getElementById('payment-add-new-card-btn');
+    if (paymentAddBtn) {
+        paymentAddBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = document.getElementById('payment-form');
+            const isHidden = form.style.display === 'none';
+            
+            if (isHidden) {
+                form.style.display = 'block';
+                paymentAddBtn.textContent = '- Hide Card Details';
+                paymentAddBtn.classList.add('active');
+            } else {
+                form.style.display = 'none';
+                paymentAddBtn.textContent = '+ Add New Card';
+                paymentAddBtn.classList.remove('active');
+                // Clear the form when hiding
+                form.reset();
+                document.getElementById('payment-error').textContent = '';
+            }
+        });
+    }
+});
+
+// Close payment modal when clicking outside
+window.addEventListener('click', function(e) {
+    const paymentModal = document.getElementById('payment-modal');
+    if (e.target === paymentModal) {
+        closePaymentModal();
+    }
+});
